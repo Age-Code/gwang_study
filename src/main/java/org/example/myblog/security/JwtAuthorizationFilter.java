@@ -50,9 +50,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		}
 		//String accessToken = jwtHeader.replace(externalProperties.getTokenPrefix(), "");
 		String accessToken = jwtHeader.substring(externalProperties.getTokenPrefix().length());
-		System.out.println("jwtHeader!!!12 : " + accessToken);
+
 		Long userId = authService.verifyAccessToken(accessToken);
-		System.out.println("userId : " + userId);
 
 		// 유저 조회, 없을 시 return NoMatchingDataException(404)
 		User user = userRepository.findById(userId).orElse(null);

@@ -38,6 +38,8 @@ public class PostRestController {
     public ResponseEntity<PostDto.DetailResDto> detail(PostDto.DetailReqDto detailReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long reqUserId = principalDetails.getUser().getId();
 
+        System.out.println("PostRestController.detail: " + reqUserId);
+
         PostDto.DetailSevDto detailSevDto = PostDto.DetailSevDto.builder().reqUserId(reqUserId).build();
         detailSevDto = (PostDto.DetailSevDto) detailSevDto.afterBuild(detailReqDto);
 
