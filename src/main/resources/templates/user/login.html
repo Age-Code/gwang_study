@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <title>User Login</title>
+</head>
+<body>
+
+<div>
+    <a href="..">Home</a>
+    <a href="signup">Signup</a>
+</div>
+
+<h1>User Login</h1>
+
+<div>
+    <label>Username</label>
+    <br/>
+    <input type="text" name = "username" id="username" placeholder="Username"/>
+    <br/>
+
+    <label>Password</label>
+    <br/>
+    <input type="password" name = "password" id="password" placeholder="password"/>
+    <br/>
+
+    <button onclick="Login()">Login</button>
+    <button onclick="getAccessToken()">Access Token</button>
+</div>
+
+<script>
+    function Login() {
+
+        let data = {
+            username: $('#username').val(),
+            password: $('#password').val()
+        }
+
+        $.ajax({
+            url: '/api/login',
+            method: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            success: (data, status, xhr)=>{
+                let resfreshToken = xhr.getResponseHeader("RefreshToken");
+                localStorage.setItem('RefreshToken', resfreshToken);
+                alert("html RefreshToken : " + resfreshToken);
+                alert(JSON.stringify(status));
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+
+    function getAccessToken(){
+        $.ajax({
+            url: "/api/auth",
+            method: "POST",
+            beforeSend : function(xhr){
+                xhr.setRequestHeader("RefreshToken", localStorage.getItem("RefreshToken"));
+            },
+            contentType : 'application/json; charset=utf-8',
+            success: (data, status, xhr)=>{
+                let accessToken = xhr.getResponseHeader("Authorization");
+                alert("html AccessToken : " + accessToken);
+                localStorage.setItem("Authorization", accessToken);
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
+</script>
+
+</body>
+</html>

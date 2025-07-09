@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.myblog.mapper.PostMapper">
+
+    <!---->
+    <select id="detail" parameterType="hashMap" resultType="org.example.myblog.dto.PostDto$DetailResDto">
+        SELECT post.id
+             , post.title
+             , post.user_id as userId
+             , post.created_at as createdAt
+             , post.modified_at as modifiedAt
+             , post.deleted
+             , post.content
+        FROM post
+        WHERE post.id = #{id}
+    </select>
+
+    <select id="list" parameterType="hashMap" resultType="org.example.myblog.dto.PostDto$ListResDto">
+        SELECT post.id
+             , post.title
+             , post.user_id as userId
+             , post.created_at as createdAt
+        FROM post
+        WHERE post.id is not NULL
+        <if test = "deleted != null">AND post.deleted =  #{deleted}</if>
+    </select>
+
+</mapper>

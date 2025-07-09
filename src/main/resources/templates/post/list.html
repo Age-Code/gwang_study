@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Post List</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+<div>
+    <a href="..">Home</a>
+    <a href="create">Create</a>
+</div>
+
+<h1>Post List</h1>
+
+<div>
+    <button onclick="listPost()">Post List</button>
+</div>
+
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">User</th>
+                <th scope="col">CreatedAt</th>
+            </tr>
+        </thead>
+        <tbody id="post_list">
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function listPost() {
+        $.ajax({
+            url: "/api/post/list",
+            method: "GET",
+            contentType : 'application/json; charset=utf-8',
+            success: (data, status, xhr)=>{
+                $("#post_list").html("");
+                for(let each of data){
+                    $("#post_list").append(
+                        "<tr>"
+                        + "<td>" + each["id"] + "</td>"
+                        + "<td onclick='location.href = \"/post/detail/" + each["id"] + "\"'>" + each["title"] + "</td>"
+                        + "<td>" + each["userId"] + "</td>"
+                        + "<td>" + each["createdAt"] + "</td>"
+                        + "</tr>"
+                    );
+                }
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
