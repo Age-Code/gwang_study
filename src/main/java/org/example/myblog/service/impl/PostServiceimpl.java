@@ -20,7 +20,7 @@ public class PostServiceimpl implements PostService {
     // Create
     @Override
     public PostDto.CreateResDto create(PostDto.CreateSevDto createSevDto) {
-        PostDto.CreateResDto res = postRepository.save(createSevDto.toEntity()).toCreateRespDto();
+        PostDto.CreateResDto res = postRepository.save(createSevDto.toEntity()).toCreateResDto();
 
         return res;
     }

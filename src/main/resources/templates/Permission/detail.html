@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Post Detail</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+<div>
+    <a href="../../">Home</a>
+    <a href="../create">Create</a>
+    <a href="../list">List</a>
+</div>
+
+<h1>Post Detail</h1>
+
+<div id="div_detail">
+    <button onclick="detailPost()">Post Detail</button>
+</div>
+
+<div id="post_detail">
+
+</div>
+<script>
+    let post_id = window.location.pathname.split("/").pop();
+    function deletePost(){
+        $.ajax({
+            url: "/api/post",
+            method: "DELETE",
+            contentType : 'application/json; charset=utf-8',
+            data:JSON.stringify({
+                id: Number(post_id)
+            }),
+            success: (data, status, xhr)=>{
+                alert(status);
+                location.href = "../list";
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+
+    function detailPost() {
+        $.ajax({
+            url: "/api/post/detail",
+            method: "GET",
+            headers:{
+                "Authorization" : localStorage.getItem("Authorization")
+            },
+            data:{
+                id: Number(post_id)
+            },
+            contentType : 'application/json; charset=utf-8',
+            success: (data, status, xhr)=>{
+                $("#div_detail").html("");
+                if(data["approved"] == true){
+                    $("#div_detail").append(
+                        "<a href=/post/update/" + post_id + ">Update</a> " +
+                        "<a onclick=\"deletePost()\">Delete</a>"
+                    );
+                }
+                $("#post_detail").html("");
+                let post = data;
+                $("#post_detail").append(
+                    "<p>Id: " + post["id"] + "</p>"
+                    + "<p>Title: " + post["title"] + "</p>"
+                    + "<p>UserId: " + post["userId"] + "</p>"
+                    + "<p>CreatedAt: " + post["createdAt"] + "</p>"
+                    + "<p>ModifiedAt: " + post["modifiedAt"] + "</p>"
+                    + "<p>Deleted: " + post["deleted"] + "</p>"
+                    + "<p>Content: " + post["content"] + "</p>"
+                );
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

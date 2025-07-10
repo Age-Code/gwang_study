@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Permission Create</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+<div>
+    <a href="..">Home</a>
+    <a href="list">List</a>
+</div>
+
+<h1>Permission Create</h1>
+
+<div>
+    <label>Title</label>
+    <br/>
+    <input type="text" name="title" id="title" placeholder="Title"/>
+    <br/>
+
+    <label>Content</label>
+    <br/>
+    <textarea name="content" id="content" placeholder="Content"></textarea>
+    <br/>
+
+    <button onclick="createPermission()">Create Permission</button>
+</div>
+
+<script>
+    function createPermission() {
+        let data = {
+            title: $('#title').val(),
+            content: $('#content').val()
+        };
+
+        $.ajax({
+            url: "/api/permission",
+            method: "Post",
+            headers:{
+                "Authorization" : localStorage.getItem("Authorization")
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            success: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

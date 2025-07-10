@@ -28,7 +28,7 @@ public class Post extends AuditingFields{
         return new Post(false, userId, title, content);
     }
 
-    public PostDto.CreateResDto toCreateRespDto() {
+    public PostDto.CreateResDto toCreateResDto() {
         return PostDto.CreateResDto.builder().id(getId()).build();
     }
 }

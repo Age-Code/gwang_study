@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.myblog.dto.PostDto;
 import org.example.myblog.security.PrincipalDetails;
 import org.example.myblog.service.PostService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,14 +17,21 @@ import java.util.List;
 @RestController
 public class PostRestController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     final PostService postService;
+
+    public Long getReqUserId(PrincipalDetails principalDetails) {
+        if(principalDetails == null || principalDetails.getUser() == null || principalDetails.getUser().getId() == null) {
+            return null;
+        }
+
+        return principalDetails.getUser().getId();
+    }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("")
     public ResponseEntity<PostDto.CreateResDto> create(@RequestBody PostDto.CreateReqDto createReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        Long reqUserId = principalDetails.getUser().getId();
+        Long reqUserId = getReqUserId(principalDetails);
 
         PostDto.CreateSevDto createSevDto = PostDto.CreateSevDto.builder().reqUserId(reqUserId).build();
         createSevDto = (PostDto.CreateSevDto) createSevDto.afterBuild(createReqDto);
@@ -36,7 +41,7 @@ public class PostRestController {
 
     @GetMapping("/detail")
     public ResponseEntity<PostDto.DetailResDto> detail(PostDto.DetailReqDto detailReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long reqUserId = principalDetails.getUser().getId();
+        Long reqUserId = getReqUserId(principalDetails);
 
         System.out.println("PostRestController.detail: " + reqUserId);
 
@@ -54,7 +59,7 @@ public class PostRestController {
     @PreAuthorize("hasRole('USER')")
     @PutMapping("")
     public ResponseEntity<Void> update(@RequestBody PostDto.UpdateReqDto updateReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long reqUserId = principalDetails.getUser().getId();
+        Long reqUserId = getReqUserId(principalDetails);
 
         PostDto.UpdateSevDto updateSevDto = PostDto.UpdateSevDto.builder().reqUserId(reqUserId).build();
         updateSevDto = (PostDto.UpdateSevDto) updateSevDto.afterBuild(updateReqDto);
@@ -66,7 +71,7 @@ public class PostRestController {
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("")
     public ResponseEntity<Void> delete(@RequestBody PostDto.DeleteReqDto deleteReqDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long reqUserId = principalDetails.getUser().getId();
+        Long reqUserId = getReqUserId(principalDetails);
 
         PostDto.DeleteSevDto deleteSevDto = PostDto.DeleteSevDto.builder().reqUserId(reqUserId).build();
         deleteSevDto = (PostDto.DeleteSevDto) deleteSevDto.afterBuild(deleteReqDto);

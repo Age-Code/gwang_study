@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Post Update</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+<div>
+    <a href="../../">Home</a>
+    <a href="../create">Create</a>
+    <a href="../list">List</a>
+    <a id="post_detail">Detail</a>
+</div>
+
+<h1>Post Update</h1>
+
+<div>
+    <button onclick="detailPost()">Post Load</button>
+    <button onclick="updatePost()">Post Update</button>
+</div>
+
+<div id="post_update">
+    <p>Title: <input type="text" id="title" /></p>
+    <p>Content: <textarea type="text" id="content"></textarea></p>
+</div>
+
+<script>
+    let post_id = window.location.pathname.split("/").pop();
+    const updateLink = document.getElementById("post_detail");
+    updateLink.href = `/post/detail/${post_id}`;
+
+    function detailPost() {
+        $.ajax({
+            url: "/api/post/detail",
+            method: "GET",
+            headers:{
+                "Authorization" : localStorage.getItem("Authorization")
+            },
+            contentType : 'application/json; charset=utf-8',
+            data:{
+                id: Number(post_id)
+            },
+            success: (data, status, xhr)=>{
+                let post = data;
+                $("#title").val(post["title"]);
+                $("#content").val(post["content"]);
+                alert(JSON.stringify(status));
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+
+    function updatePost() {
+        $.ajax({
+            url: "/api/post",
+            method: "PUT",
+            headers:{
+                "Authorization" : localStorage.getItem("Authorization")
+            },
+            contentType : 'application/json; charset=utf-8',
+            data:JSON.stringify({
+                id: Number(post_id),
+                title: $("#title").val(),
+                content: $("#content").val()
+            }),
+            success: (data, status, xhr)=>{
+                alert(JSON.stringify(status));
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
